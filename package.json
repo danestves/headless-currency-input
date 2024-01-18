@@ -1,6 +1,6 @@
 {
   "name": "headless-currency-input",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Headless Currency Input is a component to format currency input in an elegant way.",
   "keywords": [
     "react",
