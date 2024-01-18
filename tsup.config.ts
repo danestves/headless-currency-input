@@ -3,7 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
 	entry: ["src/index.ts"],
 	treeshake: true,
-	sourcemap: "inline",
+	sourcemap: true,
 	minify: true,
 	clean: true,
 	dts: true,
