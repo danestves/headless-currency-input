@@ -117,6 +117,8 @@ function RenderCurrencyInput(
 			onInput={onInput}
 			onValueChange={onValueChange}
 			getInputRef={mergeRefs(innerRef, forwadedRef)}
+      prefix={undefined}
+      valueIsNumericString={false}
 		/>
 	);
 }

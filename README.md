@@ -34,7 +34,7 @@ bun add headless-currency-input
 
 ```tsx
 import React from 'react';
-import { CurrencyInput } from 'headless-currency-currency-input';
+import { CurrencyInput } from 'headless-currency-input';
 
 const App = () => {
   const [values, setValue] = React.useState(245698189);
@@ -66,12 +66,115 @@ const App = () => {
 
 ### `currency`
 
-The currency to use. Defaults to `USD`. Must be a valid currency code based on [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
+*default:* `USD`
+
+The currency to use. Must be a valid currency code based on [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217).
 
 ### `locale`
 
-The locale to use. Defaults to `en`.
+*default:* `en`
 
+The locale to use. Must be a valid locale based on [ISO 639-1](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes).
+
+### displayType `text | input`
+
+*default:* `input`
+
+If value is `input`, it renders an input element where formatting happens as you type characters. If value is text, it renders formatted `text` in a span tag.
+
+```tsx
+import { CurrencyInput } from 'headless-currency-input';
+
+<CurrencyInput displayType="input" value={110} />;
+<CurrencyInput displayType="text" value={110} />;
+```
+
+> [!NOTE]
+> More info https://s-yadav.github.io/react-number-format/docs/props#displaytype-text--input
+
+### getInputRef `elm => void`
+
+*default:* `null`
+
+Method to get reference of input, span (based on displayType prop) or the customInput's reference.
+
+```tsx
+import { CurrencyInput } from 'headless-currency-input';
+import { useRef } from 'react';
+
+export default function App() {
+  let ref = useRef();
+  return <CurrencyInput getInputRef={ref} />;
+}
+```
+
+> [!NOTE]
+> More info https://s-yadav.github.io/react-number-format/docs/props#getinputref-elm--void
+
+### isAllowed `(values) => boolean`
+
+*default:* `undefined`
+
+A checker function to validate the input value. If this function returns false, the onChange method will not get triggered and the input value will not change.
+
+```tsx
+import { CurrencyInput } from 'headless-currency-input';
+
+const MAX_LIMIT = 1000;
+
+<CurrencyInput
+  value={11}
+  isAllowed={(values) => {
+    const { floatValue } = values;
+    return floatValue < MAX_LIMIT;
+  }}
+/>;
+```
+
+> [!NOTE]
+> More info https://s-yadav.github.io/react-number-format/docs/props#isallowed-values--boolean
+
+### onValueChange `(values, sourceInfo) => {}`
+
+*default:* `undefined`
+
+This handler provides access to any values changes in the input field and is triggered only when a prop changes or the user input changes. It provides two arguments namely the [valueObject](https://s-yadav.github.io/react-number-format/docs/quirks#values-object) as the first and the [sourceInfo](https://s-yadav.github.io/react-number-format/docs/quirks#sourceInfo) as the second. The [valueObject](https://s-yadav.github.io/react-number-format/docs/quirks#values-object) parameter contains the `formattedValue`, `value` and the `floatValue` of the given input field. The [sourceInfo](https://s-yadav.github.io/react-number-format/docs/quirks#sourceInfo) contains the `event` Object and a `source` key which indicates whether the triggered change is due to an event or a prop change. This is particularly useful in identify whether the change is user driven or is an uncontrolled change due to any prop value being updated.
+
+```tsx
+import { CurrencyInput } from 'headless-currency-input';
+
+<CurrencyInput
+  value={1234}
+  onValueChange={(values, sourceInfo) => {
+    console.log(values, sourceInfo);
+  }}
+/>;
+```
+
+> [!NOTE]
+> More info https://s-yadav.github.io/react-number-format/docs/props#onvaluechange-values-sourceinfo--
+
+### renderText `(formattedValue, customProps) => React Element`
+
+*default:* `undefined`
+
+A renderText method useful if you want to render formattedValue in different element other than span. It also returns the custom props that are added to the component which can allow passing down props to the rendered element.
+
+```tsx
+import { CurrencyInput } from 'headless-currency-input';
+
+<CurrencyInput
+  value={1231231}
+  displayType="text"
+  renderText={(value) => <b>{value}</b>}
+/>;
+```
+
+> [!NOTE]
+> More info https://s-yadav.github.io/react-number-format/docs/props#rendertext-formattedvalue-customprops--react-element
+
+---
 
 > [!TIP]
-> You can find out more about the API (based on react-number-format) here https://s-yadav.github.io/react-number-format/docs/customization/
+> Other than this it accepts all the props which can be given to a input or span based on displayType you selected.
+
