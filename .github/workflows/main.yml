@@ -23,6 +23,9 @@ jobs:
       - name: 🧅 Setup bun
         uses: oven-sh/setup-bun@v1
 
+      - name: ◭ Setup Biome
+        uses: biomejs/setup-biome@v2
+
       - name: 📥 Download deps
         run: bun install
 
