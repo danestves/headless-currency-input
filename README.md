@@ -17,20 +17,20 @@ A customizable and feature-rich React component for handling currency input. It 
 ### Install
 
 ```bash
-npm install @danestvesllc/react-currency-input
+npm install headless-currency-input
 # or
-yarn add @danestvesllc/react-currency-input
+yarn add headless-currency-input
 # or
-pnpm add @danestvesllc/react-currency-input
+pnpm add headless-currency-input
 # or
-bun add @danestvesllc/react-currency-input
+bun add headless-currency-input
 ```
 
 ### Usage
 
 ```tsx
 import React from 'react';
-import { CurrencyInput } from '@danestvesllc/react-currency-input';
+import { CurrencyInput } from 'headless-currency-currency-input';
 
 const App = () => {
   const [values, setValue] = React.useState(245698189);
