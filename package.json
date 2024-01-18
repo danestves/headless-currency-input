@@ -1,0 +1,136 @@
+{
+  "name": "headless-currency-input",
+  "version": "0.0.0",
+  "description": "Headless Currency Input is a component to format currency input in an elegant way.",
+  "keywords": [
+    "react",
+    "currency",
+    "input",
+    "mask",
+    "format",
+    "number",
+    "money",
+    "currency-input",
+    "currency-mask",
+    "currency-format",
+    "currency-number",
+    "currency-money",
+    "react-currency-input",
+    "react-currency-mask",
+    "react-currency-format",
+    "react-currency-number",
+    "react-currency-money"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Daniel Esteves",
+    "email": "danestves@gmail.com",
+    "url": "https://danestves.com"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "commit": "cz",
+    "dev": "concurrently \"bun run build --watch\" \"bun run test\" ",
+    "lint": "biome lint .",
+    "lint:fix": "bun run lint --apply && biome format --write .",
+    "prepare": "husky install",
+    "release": "bun run build && bun release-it",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
+    "ts": "node node_modules/.bin/ts-node -r tsconfig-paths/register -O '{\"module\": \"commonjs\", \"moduleResolution\": \"classic\", \"resolveJsonModule\": false }' --transpile-only --project ./tsconfig.json",
+    "type-check": "tsc"
+  },
+  "lint-staged": {
+    "**.{js|ts|cjs|mjs|d.cts|d.mts|jsx|tsx|json|jsonc}": [
+      "biome check --files-ignore-unknown=true",
+      "biome check --apply --no-errors-on-unmatched",
+      "biome check --apply --organize-imports-enabled=false --no-errors-on-unmatched",
+      "biome check --apply-unsafe --no-errors-on-unmatched",
+      "biome format --write --no-errors-on-unmatched",
+      "biome lint --apply --no-errors-on-unmatched"
+    ],
+    "*": [
+      "biome check --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@ryansonshine/cz-conventional-changelog"
+    }
+  },
+  "resolutions": {
+    "glob-parent": ">=5.1.2",
+    "parse-url": ">=8.1.0",
+    "semver": ">=7.5.2",
+    "trim": ">=0.0.3",
+    "trim-newlines": ">=3.0.1",
+    "yaml": ">=2.2.2"
+  },
+  "dependencies": {
+    "@react-aria/utils": "3.23.0",
+    "@sumup/intl": "1.6.0",
+    "react-number-format": "5.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.5.2",
+    "@commitlint/cli": "18.4.4",
+    "@commitlint/config-conventional": "18.4.4",
+    "@ryansonshine/commitizen": "4.2.8",
+    "@ryansonshine/cz-conventional-changelog": "3.3.4",
+    "@testing-library/jest-dom": "6.2.0",
+    "@testing-library/react": "14.1.2",
+    "@types/node": "20.11.5",
+    "@types/react": "18.2.48",
+    "@types/react-dom": "18.2.18",
+    "@vitejs/plugin-react": "4.2.1",
+    "@vitest/coverage-v8": "1.2.1",
+    "@vitest/ui": "1.2.1",
+    "concurrently": "8.2.2",
+    "husky": "8.0.3",
+    "jsdom": "23.2.0",
+    "lint-staged": "15.2.0",
+    "prop-types": "15.8.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "release-it": "17.0.1",
+    "ts-node": "10.9.2",
+    "tsconfig-paths": "4.2.0",
+    "tsup": "8.0.1",
+    "typescript": "5.3.3",
+    "vitest": "1.2.1"
+  },
+  "peerDependencies": {
+    "react": ">=17",
+    "react-dom": ">=17"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore(release): v${version}"
+    },
+    "github": {
+      "release": true
+    },
+    "npm": {
+      "publish": false
+    }
+  }
+}

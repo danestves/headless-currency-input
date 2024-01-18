@@ -1,0 +1,23 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"nursery": {
+				"noUnusedImports": "error",
+				"useImportType": "error"
+			}
+		}
+	},
+	"formatter": {
+		"enabled": true,
+		"lineWidth": 120
+	},
+	"files": {
+		"ignore": ["**/node_modules/**", "**/dist/**"]
+	}
+}
