@@ -54,7 +54,7 @@
     "test:ui": "vitest --ui",
     "test:watch": "vitest",
     "ts": "node node_modules/.bin/ts-node -r tsconfig-paths/register -O '{\"module\": \"commonjs\", \"moduleResolution\": \"classic\", \"resolveJsonModule\": false }' --transpile-only --project ./tsconfig.json",
-    "type-check": "tsc"
+    "typecheck": "tsc"
   },
   "lint-staged": {
     "**.{js|ts|cjs|mjs|d.cts|d.mts|jsx|tsx|json|jsonc}": [
