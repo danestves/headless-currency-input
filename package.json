@@ -1,6 +1,6 @@
 {
 	"name": "headless-currency-input",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Headless Currency Input is a component to format currency input in an elegant way.",
 	"keywords": [
 		"react",
@@ -39,7 +39,9 @@
 	},
 	"main": "dist/index.js",
 	"types": "./dist/index.d.ts",
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"scripts": {
 		"build": "tsup",
 		"commit": "cz",
@@ -62,7 +64,9 @@
 			"biome format --write --no-errors-on-unmatched",
 			"biome lint --apply --no-errors-on-unmatched"
 		],
-		"*": ["biome check --no-errors-on-unmatched --files-ignore-unknown=true"]
+		"*": [
+			"biome check --no-errors-on-unmatched --files-ignore-unknown=true"
+		]
 	},
 	"config": {
 		"commitizen": {
