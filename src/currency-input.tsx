@@ -74,7 +74,7 @@ function RenderCurrencyInput(
 
 	function onValueChange(values: NumberFormatValues, sourceInfo: SourceInfo) {
 		const val = minimumFractionDigits
-			? (parseFloat(values.value) / divideBy).toFixed(minimumFractionDigits)
+			? (Number.parseFloat(values.value) / divideBy).toFixed(minimumFractionDigits)
 			: values.value;
 		const floatVal = values.floatValue && minimumFractionDigits ? values.floatValue / divideBy : values.floatValue;
 

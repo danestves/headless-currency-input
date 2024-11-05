@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
+	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
 	"organizeImports": {
 		"enabled": true
 	},
@@ -7,8 +7,10 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"nursery": {
-				"noUnusedImports": "error",
+			"correctness": {
+				"noUnusedImports": "error"
+			},
+			"style": {
 				"useImportType": "error"
 			}
 		}
