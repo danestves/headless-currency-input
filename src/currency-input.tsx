@@ -2,6 +2,7 @@ import { mergeRefs } from "@react-aria/utils";
 import { resolveCurrencyFormat } from "@sumup/intl";
 import { type FocusEvent, type FormEvent, type ForwardedRef, forwardRef, useRef } from "react";
 import {
+	type InputAttributes,
 	NumberFormatBase,
 	type NumberFormatBaseProps,
 	type NumberFormatValues,
@@ -10,14 +11,18 @@ import {
 
 import { setCaretPosition } from "./utils";
 
-export interface CurrencyInputProps extends Omit<NumberFormatBaseProps, "format" | "prefix"> {
-	currency?: string;
+type CurrencyInputProps<BaseType = InputAttributes> = Omit<
+	NumberFormatBaseProps<BaseType>,
+	"format" | "prefix" | "customInput"
+> & {
 	locale?: string;
+	currency?: string;
 	withCurrencySymbol?: boolean;
-}
+	customInput?: React.ComponentType<BaseType>;
+};
 
-function RenderCurrencyInput(
-	{ locale = "en", currency = "USD", withCurrencySymbol = true, ...props }: CurrencyInputProps,
+function RenderCurrencyInput<BaseType = InputAttributes>(
+	{ locale = "en", currency = "USD", withCurrencySymbol = true, ...props }: CurrencyInputProps<BaseType>,
 	forwadedRef: ForwardedRef<HTMLInputElement>,
 ) {
 	const innerRef = useRef<HTMLInputElement>(null);
@@ -106,10 +111,12 @@ function RenderCurrencyInput(
 			setCaretPosition(innerRef.current, positionLastDigit + (minimumFractionDigits ?? 0));
 		}
 
+		// @ts-expect-error - onInput is not part of the type
 		props?.onInput?.(event);
 	}
 
 	return (
+		// @ts-expect-error
 		<NumberFormatBase
 			{...props}
 			format={format}
@@ -123,4 +130,7 @@ function RenderCurrencyInput(
 	);
 }
 
-export const CurrencyInput = forwardRef<HTMLInputElement, CurrencyInputProps>(RenderCurrencyInput);
+// @ts-expect-error - forwardRef is not part of the type
+export const CurrencyInput: <BaseType = InputAttributes>(
+	props: CurrencyInputProps<BaseType> & { ref?: ForwardedRef<HTMLInputElement> },
+) => ReturnType<typeof RenderCurrencyInput<BaseType>> = forwardRef(RenderCurrencyInput);
