@@ -54,7 +54,7 @@
 		"typecheck": "tsc"
 	},
 	"lint-staged": {
-		"**.{js|ts|cjs|mjs|d.cts|d.mts|jsx|tsx|json|jsonc}": [
+		"**.{js|ts|cjs|mjs|d.cts|d.mts|jsx|tsx}": [
 			"biome check --files-ignore-unknown=true",
 			"biome check --apply --no-errors-on-unmatched",
 			"biome check --apply --organize-imports-enabled=false --no-errors-on-unmatched",
