@@ -40,7 +40,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 			value = 0;
 			// when this happens, we want to position the caret at the end
 			// of the input only if the user is on the input
-			if (document.activeElement === innerRef.current) {
+			if (typeof document !== "undefined" && document.activeElement === innerRef.current) {
 				innerRef.current?.setSelectionRange(
 					inputValue.length + (minimumFractionDigits ?? 0),
 					inputValue.length + (minimumFractionDigits ?? 0),
