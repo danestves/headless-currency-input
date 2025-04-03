@@ -1,3 +1,5 @@
+"use client";
+
 import { mergeRefs } from "@react-aria/utils";
 import { resolveCurrencyFormat } from "@sumup/intl";
 import { type FocusEvent, type FormEvent, type ForwardedRef, forwardRef, useRef } from "react";
