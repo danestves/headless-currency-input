@@ -13,21 +13,21 @@ afterEach(() => {
 });
 
 it('should show the initial value as "$ 0.00" when number 0 is passed', () => {
-	const wrapper = render(<CurrencyInput value={0} />);
+	const wrapper = render(<CurrencyInput value={0} withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	expect(input.value).toBe("$ 0.00");
 });
 
 it('should show the initial value as "$ 0.00" string when empty string is passed', () => {
-	const wrapper = render(<CurrencyInput value="" />);
+	const wrapper = render(<CurrencyInput value="" withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	expect(input.value).toBe("$ 0.00");
 });
 
 it("should maintain decimal points", () => {
-	const wrapper = render(<CurrencyInput />);
+	const wrapper = render(<CurrencyInput withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	fireEvent.change(input, { target: { value: "2456981.89" } });
@@ -36,7 +36,7 @@ it("should maintain decimal points", () => {
 });
 
 it("should handle different currency formats", () => {
-	const wrapper = render(<CurrencyInput currency="EUR" locale="de-DE" />);
+	const wrapper = render(<CurrencyInput currency="EUR" locale="de-DE" withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	fireEvent.change(input, { target: { value: "1234.56" } });
@@ -45,7 +45,7 @@ it("should handle different currency formats", () => {
 });
 
 it("should handle currency symbol position correctly", () => {
-	const wrapper = render(<CurrencyInput currency="JPY" locale="ja-JP" />);
+	const wrapper = render(<CurrencyInput currency="JPY" locale="ja-JP" withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	fireEvent.change(input, { target: { value: "1234" } });
@@ -54,7 +54,7 @@ it("should handle currency symbol position correctly", () => {
 });
 
 it("should handle minimum and maximum fraction digits", () => {
-	const wrapper = render(<CurrencyInput currency="JPY" />);
+	const wrapper = render(<CurrencyInput currency="JPY" withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	fireEvent.change(input, { target: { value: "1234.56" } });
@@ -74,7 +74,7 @@ it("should handle custom input props", () => {
 
 it("should handle onValueChange callback", () => {
 	const onValueChange = () => {};
-	const wrapper = render(<CurrencyInput onValueChange={onValueChange} />);
+	const wrapper = render(<CurrencyInput onValueChange={onValueChange} withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	fireEvent.change(input, { target: { value: "1234.56" } });
@@ -83,14 +83,14 @@ it("should handle onValueChange callback", () => {
 });
 
 it("should handle disabled state", () => {
-	const wrapper = render(<CurrencyInput disabled />);
+	const wrapper = render(<CurrencyInput disabled withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	expect(input.disabled).toBe(true);
 });
 
 it("should handle readOnly state", () => {
-	const wrapper = render(<CurrencyInput readOnly />);
+	const wrapper = render(<CurrencyInput readOnly withCurrencySymbol />);
 	const input = wrapper.getByRole("textbox") as HTMLInputElement;
 
 	expect(input.readOnly).toBe(true);
@@ -100,7 +100,7 @@ it("should handle custom input component", () => {
 	const CustomInput = forwardRef<HTMLInputElement, InputAttributes>((props, ref) => (
 		<input {...props} ref={ref} data-testid="custom-input" />
 	));
-	const wrapper = render(<CurrencyInput customInput={CustomInput} />);
+	const wrapper = render(<CurrencyInput customInput={CustomInput} withCurrencySymbol />);
 	const input = wrapper.getByTestId("custom-input") as HTMLInputElement;
 
 	expect(input).toBeTruthy();
