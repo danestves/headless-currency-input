@@ -101,7 +101,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	function onFocus(event: FocusEvent<HTMLInputElement>) {
 		if (innerRef.current) {
 			const value = innerRef.current.value;
-			const decimalIndex = value.indexOf('.');
+			const decimalIndex = value.indexOf(".");
 			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
 			setCaretPosition(innerRef.current, position);
 		}
@@ -114,7 +114,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	function onInput(event: FormEvent<HTMLInputElement>) {
 		if (innerRef.current) {
 			const value = innerRef.current.value;
-			const decimalIndex = value.indexOf('.');
+			const decimalIndex = value.indexOf(".");
 			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
 			setCaretPosition(innerRef.current, position);
 		}
@@ -124,7 +124,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 
 	return (
 		<NumberFormatBase<BaseType>
-			{...props as NumberFormatBaseProps<BaseType>}
+			{...(props as NumberFormatBaseProps<BaseType>)}
 			format={format}
 			onFocus={onFocus}
 			onInput={onInput}
