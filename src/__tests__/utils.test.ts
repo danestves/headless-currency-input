@@ -75,7 +75,8 @@ describe("utils", () => {
 
 			// Set selection range in reverse order
 			input.setSelectionRange(4, 2);
-			expect(getCurrentCaretPosition(input)).toBe(4);
+			// The browser normalizes the selection range, so we expect the same result
+			expect(getCurrentCaretPosition(input)).toBe(2);
 
 			document.body.removeChild(input);
 		});
