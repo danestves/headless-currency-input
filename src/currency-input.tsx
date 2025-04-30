@@ -88,17 +88,16 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	 * decimal separator for current locale
 	 */
 	const getDecimalSeparator = (): string => {
-		return (1.1).toLocaleString(locale).substring(1, 2);
+		const parts = new Intl.NumberFormat(locale).formatToParts(1.1);
+		return parts.find((p) => p.type === "decimal")?.value ?? ".";
 	};
 
 	/**
 	 * thousand separator for current locale
 	 */
 	const getThousandSeparator = (): string => {
-		const separator = (1000).toLocaleString(locale).substring(1, 2);
-		// In case there are locales that don't use a thousand separator
-		if (separator.match(/\d/)) return "";
-		return separator;
+		const parts = new Intl.NumberFormat(locale).formatToParts(1000);
+		return parts.find((p) => p.type === "group")?.value ?? "";
 	};
 
 	/**
