@@ -21,13 +21,15 @@ type CurrencyInputProps<BaseType = InputAttributes> = Omit<
 	currency?: string;
 	withCurrencySymbol?: boolean;
 	customInput?: React.ComponentType<BaseType>;
+	onInput?: (event: FormEvent<HTMLInputElement>) => void;
 };
 
 function RenderCurrencyInput<BaseType = InputAttributes>(
-	{ locale = "en", currency = "USD", withCurrencySymbol = true, ...props }: CurrencyInputProps<BaseType>,
+	props: CurrencyInputProps<BaseType>,
 	forwadedRef: ForwardedRef<HTMLInputElement>,
 ) {
 	const innerRef = useRef<HTMLInputElement>(null);
+	const { locale = "en", currency = "USD", withCurrencySymbol = true } = props;
 	const currencyFormat = resolveCurrencyFormat(locale, currency);
 	const prefix = currencyFormat?.currencyPosition === "prefix" ? `${currencyFormat.currencySymbol} ` : "";
 	const minimumFractionDigits = currencyFormat?.minimumFractionDigits ?? 0;
@@ -98,8 +100,10 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 
 	function onFocus(event: FocusEvent<HTMLInputElement>) {
 		if (innerRef.current) {
-			const positionLastDigit = innerRef.current.value.length - prefix.length;
-			setCaretPosition(innerRef.current, positionLastDigit + (minimumFractionDigits ?? 0));
+			const value = innerRef.current.value;
+			const decimalIndex = value.indexOf('.');
+			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
+			setCaretPosition(innerRef.current, position);
 		}
 
 		props?.onFocus?.(event);
@@ -109,18 +113,18 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	// with the arrow keys
 	function onInput(event: FormEvent<HTMLInputElement>) {
 		if (innerRef.current) {
-			const positionLastDigit = innerRef.current.value.length - prefix.length;
-			setCaretPosition(innerRef.current, positionLastDigit + (minimumFractionDigits ?? 0));
+			const value = innerRef.current.value;
+			const decimalIndex = value.indexOf('.');
+			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
+			setCaretPosition(innerRef.current, position);
 		}
 
-		// @ts-expect-error - onInput is not part of the type
 		props?.onInput?.(event);
 	}
 
 	return (
-		// @ts-expect-error
-		<NumberFormatBase
-			{...props}
+		<NumberFormatBase<BaseType>
+			{...props as NumberFormatBaseProps<BaseType>}
 			format={format}
 			onFocus={onFocus}
 			onInput={onInput}
@@ -132,7 +136,6 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	);
 }
 
-// @ts-expect-error - forwardRef is not part of the type
-export const CurrencyInput: <BaseType = InputAttributes>(
+export const CurrencyInput = forwardRef(RenderCurrencyInput) as <BaseType = InputAttributes>(
 	props: CurrencyInputProps<BaseType> & { ref?: ForwardedRef<HTMLInputElement> },
-) => ReturnType<typeof RenderCurrencyInput<BaseType>> = forwardRef(RenderCurrencyInput);
+) => ReturnType<typeof RenderCurrencyInput<BaseType>>;
