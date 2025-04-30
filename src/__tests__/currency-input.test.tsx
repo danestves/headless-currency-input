@@ -21,10 +21,10 @@ describe("CurrencyInput", () => {
 
 	describe("getThousandSeparator", () => {
 		it("should return thousand separator for en locale", () => {
-			const { container } = render(<CurrencyInput locale="en" />);
+			const { container } = render(<CurrencyInput locale="en" value={100000} />);
 			const input = container.querySelector("input");
 			if (!input) throw new Error("Input not found");
-			expect(input.value).toContain(".");
+			expect(input.value).toContain(",");
 		});
 
 		it("should return empty string for locales without thousand separator", () => {
