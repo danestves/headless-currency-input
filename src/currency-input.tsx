@@ -132,6 +132,9 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 
 	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
 		const { key } = event;
+
+		if (event.defaultPrevented) return;
+
 		if (key === "Backspace") {
 			correctCaretPosition(true);
 		} else if (key === "Delete") {
