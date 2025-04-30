@@ -1,12 +1,12 @@
 /**
  * @see https://github.com/i18n-components/i18n-components/blob/main/packages/input-number/src/helpers.ts#L2
  */
+
+/** set the caret positon in an input field */
 export function setCaretPosition(el: HTMLInputElement, caretPos = 0): boolean {
-	// biome-ignore lint/correctness/noSelfAssign: comes from the reference
-	el.value = el.value;
-	// ^ this is used to not only get "focus", but
-	// to make sure we don't have it everything -selected-
-	// (it causes an issue in chrome, and having it doesn't hurt any other browser)
+	// Deselect any selected text
+	el.select();
+	el.setSelectionRange(0, 0);
 
 	if (el !== null) {
 		if (el.selectionStart || el.selectionStart === 0) {
@@ -21,4 +21,13 @@ export function setCaretPosition(el: HTMLInputElement, caretPos = 0): boolean {
 	}
 
 	return false;
+}
+
+/**
+ * @param  {HTMLInputElement} el
+ * @returns number
+ */
+export function getCurrentCaretPosition(el: HTMLInputElement): number {
+	/* Max of selectionStart and selectionEnd is taken for the patch of pixel and other mobile device caret bug */
+	return Math.max(<number>el.selectionStart, <number>el.selectionEnd);
 }

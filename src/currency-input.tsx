@@ -2,7 +2,7 @@
 
 import { mergeRefs } from "@react-aria/utils";
 import { resolveCurrencyFormat } from "@sumup/intl";
-import { type FocusEvent, type FormEvent, type ForwardedRef, forwardRef, useRef } from "react";
+import { type FormEvent, type ForwardedRef, forwardRef, useRef } from "react";
 import {
 	type InputAttributes,
 	NumberFormatBase,
@@ -11,7 +11,7 @@ import {
 	type SourceInfo,
 } from "react-number-format";
 
-import { setCaretPosition } from "./utils";
+import { getCurrentCaretPosition, setCaretPosition } from "./utils";
 
 type CurrencyInputProps<BaseType = InputAttributes> = Omit<
 	NumberFormatBaseProps<BaseType>,
@@ -22,6 +22,7 @@ type CurrencyInputProps<BaseType = InputAttributes> = Omit<
 	withCurrencySymbol?: boolean;
 	customInput?: React.ComponentType<BaseType>;
 	onInput?: (event: FormEvent<HTMLInputElement>) => void;
+	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
 };
 
 function RenderCurrencyInput<BaseType = InputAttributes>(
@@ -29,7 +30,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	forwadedRef: ForwardedRef<HTMLInputElement>,
 ) {
 	const innerRef = useRef<HTMLInputElement>(null);
-	const { locale = "en", currency = "USD", withCurrencySymbol = true } = props;
+	const { locale = "en", currency = "USD", withCurrencySymbol = false } = props;
 	const currencyFormat = resolveCurrencyFormat(locale, currency);
 	const prefix = currencyFormat?.currencyPosition === "prefix" ? `${currencyFormat.currencySymbol} ` : "";
 	const minimumFractionDigits = currencyFormat?.minimumFractionDigits ?? 0;
@@ -40,27 +41,11 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 		let value = 0;
 		if (!Number(inputValue)) {
 			value = 0;
-			// when this happens, we want to position the caret at the end
-			// of the input only if the user is on the input
-			if (typeof document !== "undefined" && document.activeElement === innerRef.current) {
-				innerRef.current?.setSelectionRange(
-					inputValue.length + (minimumFractionDigits ?? 0),
-					inputValue.length + (minimumFractionDigits ?? 0),
-				);
-
-				if (inputValue.length && inputValue.length <= 3) {
-					// to avoid the caret jumping around, we want to position it
-					// at the end of the input when the user is typing the first
-					// numbers
-					innerRef.current?.setSelectionRange(
-						inputValue.length + (minimumFractionDigits ?? 0),
-						inputValue.length + (minimumFractionDigits ?? 0),
-					);
-				}
-			}
 		} else {
 			value = Number(inputValue);
 		}
+
+		if (!innerRef.current) return "";
 
 		const amount = new Intl.NumberFormat(currencyFormat?.locale, {
 			style: "currency",
@@ -69,16 +54,18 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 			minimumFractionDigits,
 			maximumFractionDigits,
 		})
-			// dynamically divide the value by the minimumFractionDigits
 			.format(minimumFractionDigits ? value / divideBy : value)
 			.replace(/[a-z]{3}/i, "")
 			.trim();
 
-		if (withCurrencySymbol) {
-			return `${prefix}${amount}`;
+		const formattedValue = withCurrencySymbol ? `${prefix}${amount}` : amount;
+
+		if (!inputValue || inputValue === "0") {
+			updateCaretPosition(formattedValue.length);
+			return formattedValue;
 		}
 
-		return `${amount}`;
+		return formattedValue;
 	}
 
 	function onValueChange(values: NumberFormatValues, sourceInfo: SourceInfo) {
@@ -87,7 +74,6 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 			: values.value;
 		const floatVal = values.floatValue && minimumFractionDigits ? values.floatValue / divideBy : values.floatValue;
 
-		console.info;
 		props?.onValueChange?.(
 			{
 				value: val,
@@ -98,28 +84,74 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 		);
 	}
 
-	function onFocus(event: FocusEvent<HTMLInputElement>) {
+	/**
+	 * decimal separator for current locale
+	 */
+	const getDecimalSeparator = (): string => {
+		return (1.1).toLocaleString(locale).substring(1, 2);
+	};
+
+	/**
+	 * thousand separator for current locale
+	 */
+	const getThousandSeparator = (): string => {
+		const separator = (1000).toLocaleString(locale).substring(1, 2);
+		// In case there are locales that don't use a thousand separator
+		if (separator.match(/\d/)) return "";
+		return separator;
+	};
+
+	/**
+	 * set the curser at specific position
+	 * @param  {number} pos
+	 * @returns void
+	 */
+	const updateCaretPosition = (pos: number): void => {
 		if (innerRef.current) {
-			const value = innerRef.current.value;
-			const decimalIndex = value.indexOf(".");
-			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
-			setCaretPosition(innerRef.current, position);
+			setCaretPosition(innerRef.current, pos);
+		}
+	};
+
+	const correctCaretPosition = (isBackspace = false): void => {
+		if (!innerRef.current) return;
+
+		const currentCaretPosition = getCurrentCaretPosition(innerRef.current);
+		const decimalSeparator = minimumFractionDigits ? `\\${getDecimalSeparator()}` : "";
+		const thousandSeparator = getThousandSeparator() ? `\\${getThousandSeparator()}` : "";
+		const separatorDecimalRegex = new RegExp(`^${decimalSeparator}${thousandSeparator}$`, "g");
+		const currentCharacter = isBackspace
+			? innerRef.current.value[currentCaretPosition - 1]
+			: innerRef.current.value[currentCaretPosition];
+
+		if (currentCharacter?.match(separatorDecimalRegex)) {
+			const deletionPos = currentCaretPosition + (isBackspace ? -1 : 1);
+			updateCaretPosition(deletionPos);
+		}
+	};
+
+	function onKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+		const { key } = event;
+		if (key === "Backspace") {
+			correctCaretPosition(true);
+		} else if (key === "Delete") {
+			correctCaretPosition(false);
 		}
 
+		props?.onKeyDown?.(event);
+	}
+
+	function onFocus(event: React.FocusEvent<HTMLInputElement>) {
+		if (innerRef.current) {
+			setCaretPosition(innerRef.current, innerRef.current.value.length);
+		}
 		props?.onFocus?.(event);
 	}
 
-	// set caret position when the user is typing, but not when the user move the caret
-	// with the arrow keys
-	function onInput(event: FormEvent<HTMLInputElement>) {
+	function onClick(event: React.MouseEvent<HTMLInputElement>) {
 		if (innerRef.current) {
-			const value = innerRef.current.value;
-			const decimalIndex = value.indexOf(".");
-			const position = decimalIndex === -1 ? value.length : decimalIndex + minimumFractionDigits + 1;
-			setCaretPosition(innerRef.current, position);
+			setCaretPosition(innerRef.current, innerRef.current.value.length);
 		}
-
-		props?.onInput?.(event);
+		props?.onClick?.(event);
 	}
 
 	return (
@@ -127,7 +159,8 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 			{...(props as NumberFormatBaseProps<BaseType>)}
 			format={format}
 			onFocus={onFocus}
-			onInput={onInput}
+			onClick={onClick}
+			onKeyDown={onKeyDown}
 			onValueChange={onValueChange}
 			getInputRef={mergeRefs(innerRef, forwadedRef)}
 			prefix={undefined}
