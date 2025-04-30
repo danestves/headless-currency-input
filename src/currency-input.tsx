@@ -45,8 +45,9 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 			value = Number(inputValue);
 		}
 
-		if (!innerRef.current) return "";
-
+        if (!innerRef.current) {
+            return inputValue;
+        }
 		const amount = new Intl.NumberFormat(currencyFormat?.locale, {
 			style: "currency",
 			currency: currencyFormat?.currency,
