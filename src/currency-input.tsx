@@ -119,7 +119,8 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 		const currentCaretPosition = getCurrentCaretPosition(innerRef.current);
 		const decimalSeparator = minimumFractionDigits ? `\\${getDecimalSeparator()}` : "";
 		const thousandSeparator = getThousandSeparator() ? `\\${getThousandSeparator()}` : "";
-		const separatorDecimalRegex = new RegExp(`^${decimalSeparator}${thousandSeparator}$`, "g");
+		const parts = [decimalSeparator, thousandSeparator].filter(Boolean).join("|");
+		const separatorDecimalRegex = new RegExp(`^(${parts})$`);
 		const currentCharacter = isBackspace
 			? innerRef.current.value[currentCaretPosition - 1]
 			: innerRef.current.value[currentCaretPosition];
