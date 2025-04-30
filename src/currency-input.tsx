@@ -2,7 +2,7 @@
 
 import { mergeRefs } from "@react-aria/utils";
 import { resolveCurrencyFormat } from "@sumup/intl";
-import { type FormEvent, type ForwardedRef, forwardRef, useRef } from "react";
+import { type ForwardedRef, forwardRef, useRef } from "react";
 import {
 	type InputAttributes,
 	NumberFormatBase,
@@ -21,7 +21,6 @@ type CurrencyInputProps<BaseType = InputAttributes> = Omit<
 	currency?: string;
 	withCurrencySymbol?: boolean;
 	customInput?: React.ComponentType<BaseType>;
-	onInput?: (event: FormEvent<HTMLInputElement>) => void;
 	onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
 };
 
