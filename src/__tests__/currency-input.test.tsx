@@ -1,4 +1,4 @@
-import { describe, expect, it, mock } from "bun:test";
+import { describe, expect, it, mock, spyOn } from "bun:test";
 import { act, fireEvent, render } from "@testing-library/react";
 import { CurrencyInput } from "../currency-input";
 
@@ -75,8 +75,13 @@ describe("CurrencyInput", () => {
 			const input = container.querySelector("input");
 			if (!input) throw new Error("Input not found");
 
+			// Set up the input state
+			fireEvent.change(input, { target: { value: "1.23" } });
+			input.setSelectionRange(1, 1);
+
+			const spy = spyOn(input, "setSelectionRange");
 			fireEvent.keyDown(input, { key: "Backspace" });
-			// No error means correctCaretPosition was called
+			expect(spy).toHaveBeenCalled();
 		});
 
 		it("should call correctCaretPosition on delete", () => {
@@ -84,8 +89,13 @@ describe("CurrencyInput", () => {
 			const input = container.querySelector("input");
 			if (!input) throw new Error("Input not found");
 
+			// Set up the input state
+			fireEvent.change(input, { target: { value: "1,234" } });
+			input.setSelectionRange(1, 1);
+
+			const spy = spyOn(input, "setSelectionRange");
 			fireEvent.keyDown(input, { key: "Delete" });
-			// No error means correctCaretPosition was called
+			expect(spy).toHaveBeenCalled();
 		});
 
 		it("should call props.onKeyDown if provided", () => {
