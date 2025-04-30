@@ -29,7 +29,7 @@ function RenderCurrencyInput<BaseType = InputAttributes>(
 	forwadedRef: ForwardedRef<HTMLInputElement>,
 ) {
 	const innerRef = useRef<HTMLInputElement>(null);
-	const { locale = "en", currency = "USD", withCurrencySymbol = false, ...rest } = props;
+	const { locale = "en", currency = "USD", withCurrencySymbol = true, ...rest } = props;
 	const currencyFormat = resolveCurrencyFormat(locale, currency);
 	const prefix = currencyFormat?.currencyPosition === "prefix" ? `${currencyFormat.currencySymbol} ` : "";
 	const minimumFractionDigits = currencyFormat?.minimumFractionDigits ?? 0;
